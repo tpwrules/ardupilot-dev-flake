@@ -30,9 +30,11 @@
   in {
     devShell."${system}" = pkgs.mkShell {
       buildInputs = [
-        pkgs.hello
-
-        (pkgs.python3.withPackages (p: with p; [
+        (pkgs.python3.withPackages (p: [
+          p.empy
+          p.pexpect
+          p.setuptools
+          p.future
         ]))
 
         pleaseKeepMyInputs
