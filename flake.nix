@@ -37,6 +37,8 @@
         (pkgs.callPackage ./nix/packages/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux {})
         # needed for version info and such
         pkgs.git
+        # checked for, not sure if needed
+        pkgs.rsync
 
         (pkgs.python3.withPackages (p: [
           p.empy
