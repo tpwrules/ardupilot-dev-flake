@@ -48,6 +48,7 @@
           p.pexpect
           p.setuptools
           p.future
+          p.intelhex
         ]))
 
         pleaseKeepMyInputs
