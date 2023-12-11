@@ -40,6 +40,9 @@
         # checked for, not sure if needed
         pkgs.rsync
 
+        # used for SITL (console and map modules must be manually loaded)
+        pkgs.mavproxy
+
         (pkgs.python3.withPackages (p: [
           p.empy
           p.pexpect
