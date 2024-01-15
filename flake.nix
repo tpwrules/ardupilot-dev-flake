@@ -49,6 +49,7 @@
           p.setuptools
           p.future
           p.intelhex
+          p.scipy
         ]))
 
         pleaseKeepMyInputs
