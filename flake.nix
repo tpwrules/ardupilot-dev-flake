@@ -52,6 +52,9 @@
           p.scipy
         ]))
 
+        # must be 5.1 due to `setfenv` in libraries/AP_Scripting/tests/luacheck.lua
+        pkgs.lua51Packages.luacheck
+
         pleaseKeepMyInputs
       ];
     };
