@@ -54,11 +54,6 @@
 
         pleaseKeepMyInputs
       ];
-
-      shellHook = ''
-        # hack to work around https://github.com/ArduPilot/ardupilot/blob/14aeb831fb98c4f8d5e2283b10ac95624476fb40/libraries/AP_Scripting/wscript#L11
-        export NIX_CFLAGS_COMPILE=" -Wno-error=maybe-uninitialized $NIX_CFLAGS_COMPILE"
-      '';
     };
   };
 }
