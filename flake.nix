@@ -44,7 +44,7 @@
         pkgs.mavproxy
 
         (pkgs.python3.withPackages (p: [
-          p.empy
+          (p.callPackage ./nix/packages/empy {})
           p.pexpect
           p.setuptools
           p.future
