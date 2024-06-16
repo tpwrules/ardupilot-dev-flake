@@ -50,10 +50,28 @@
           p.future
           p.intelhex
           p.scipy
+          # fake library so that Tools/scripts/run_lua_language_check.py doesn't download binaries
+          (p.buildPythonPackage {
+            pname = "github_release_downloader";
+            version = "0";
+            format = "other";
+            dontUnpack = true;
+            buildPhase = ''
+              mkdir -p $out/${p.python.sitePackages}/github_release_downloader/
+              cat << EOF > $out/${p.python.sitePackages}/github_release_downloader/__init__.py
+              def GitHubRepo(*args, **kwargs): pass
+              def check_and_download_updates(*args, **kwargs): pass
+              EOF
+            '';
+          })
         ]))
 
         # must be 5.1 due to `setfenv` in libraries/AP_Scripting/tests/luacheck.lua
         pkgs.lua51Packages.luacheck
+        # invoke in the correct way so that the --check argument works (upstream nixpkgs patch might be warranted?)
+        (pkgs.writeShellScriptBin "lua-language-server" ''
+          exec ${pkgs.lua-language-server}/share/lua-language-server/bin/lua-language-server --metapath=''${XDG_CACHE_HOME:-''$HOME/.cache}/lua-language-server/meta "''$@"
+        '')
 
         pleaseKeepMyInputs
       ];
