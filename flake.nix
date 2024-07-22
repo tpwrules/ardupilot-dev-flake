@@ -8,8 +8,9 @@
 # `nix develop`.
 {
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  # ESP-IDF 4.4.1
+  # ESP-IDF 4.x series
   inputs.esp32.url = "github:mirrexagon/nixpkgs-esp-dev/48413ee362b4d0709e1a0dff6aba7fd99060335e";
+  inputs.esp32.inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-22.05"; # needed for python 3.9 for mach-nix
 
   outputs = { self, nixpkgs, esp32 }: let
     inputs = { inherit nixpkgs; };
@@ -76,8 +77,14 @@
         '')
 
         # esp32 stuff
-        esp32.packages."${system}".gcc-xtensa-esp32-elf-bin
-        esp32.packages."${system}".gcc-xtensa-esp32s3-elf-bin
+        (esp32.packages."${system}".gcc-xtensa-esp32-elf-bin.override {
+          version = "2021r2-patch5";
+          hash = "sha256-jvFOBAnCARtB5QSjD3DT41KHMTp5XR8kYq0s0OIFLTc=";
+        })
+        (esp32.packages."${system}".gcc-xtensa-esp32s3-elf-bin.override {
+          version = "2021r2-patch5";
+          hash = "sha256-iqF6at8B76WxYoyKxXgGOkTSaulYHTlIa5IiOkHvJi8=";
+        })
         esp32.packages."${system}".openocd-esp32-bin
         pkgs.esptool
 
@@ -85,9 +92,52 @@
       ];
 
     shellHook = let
+      # mach-nix is used to set up the ESP-IDF Python environment.
+      mach-nix-src = esp32.inputs.nixpkgs.legacyPackages."${system}".fetchFromGitHub {
+        owner = "DavHau";
+        repo = "mach-nix";
+        rev = "c409df5347ef23f0bcba0aefc9a6345ef17b3441"; # last version
+        hash = "sha256-gY8XkqNI21+Jkko6HigBv54s8od/SdyiSugM1yq/XII=";
+      };
+
+      mach-nix-src-fixed = pkgs.runCommand "patch" {} ''
+        cp -r ${mach-nix-src}/ $out
+        chmod -R u+w $out
+
+        # patch idf-component-manager's illegal version requirements on the fly
+        substituteInPlace $out/mach_nix/requirements.py \
+          --replace-fail 'if distlib.markers.interpret(str(req.marker), context):' \
+            'if distlib.markers.interpret(str(req.marker.replace(".*", "")), context):'
+      '';
+
+      mach-nix = import mach-nix-src-fixed {
+        pypiDataRev = "570d3543eb53dad7d1eb0bb88ecbcf450bc69847"; # last version
+        pypiDataSha256 = "sha256:1xhk812r208ppz325wxhzksqjalka6n1sdqgag5x8ilfj506pgr6";
+        pkgs = esp32.inputs.nixpkgs.legacyPackages."${system}";
+      };
+
+      mach-nix-wrapper = mach-nix // {
+        mkPython = args@{requirements, ...}: mach-nix.mkPython {
+          # edit requirements to avoid pitfalls
+          # gdbgui: deps we don't care about
+          # cryptography: bad hash for version 3??? so we limit to max of ver 2
+          requirements = builtins.replaceStrings [ "gdbgui" "cryptography"] [ "#gdbgui" "cryptography>=2.1.4,<3.0.0 #"] requirements;
+        } // args;
+      };
+
       esp-idf = (esp32.packages."${system}".esp-idf.overrideAttrs (old: {
         propagatedBuildInputs = []; # prevent the python from leaking
-      }));
+        installPhase = old.installPhase + ''
+          # avoid whining about our slightly modified requirement list
+          chmod u+w $out/requirements.txt
+          truncate -s 0 $out/requirements.txt
+        '';
+      })).override {
+        # from Tools/scripts/esp32_get_idf.sh
+        rev = "6d853f0525b003afaeaed4fb59a265c8522c2da9";
+        sha256 = "sha256-DBEgwKjBFhlmTDKJxrBxLQp1pCFgxwuGGNlpz90k/8A=";
+        mach-nix = mach-nix-wrapper;
+      };
 
       esp-python-wrapper = pkgs.writeShellScriptBin "esp-python-wrapper" ''
         PYTHONPATH=$IDF_PYTHON_ENV_PATH $IDF_PYTHON_ENV_PATH/bin/python "$@"
