@@ -8,8 +8,10 @@
 # `nix develop`.
 {
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  # ESP-IDF 4.4.1
+  inputs.esp32.url = "github:mirrexagon/nixpkgs-esp-dev/48413ee362b4d0709e1a0dff6aba7fd99060335e";
 
-  outputs = { self, nixpkgs }: let
+  outputs = { self, nixpkgs, esp32 }: let
     inputs = { inherit nixpkgs; };
     system = "x86_64-linux";
 
@@ -73,8 +75,29 @@
           exec ${pkgs.lua-language-server}/share/lua-language-server/bin/lua-language-server --metapath=''${XDG_CACHE_HOME:-''$HOME/.cache}/lua-language-server/meta "''$@"
         '')
 
+        # esp32 stuff
+        esp32.packages."${system}".gcc-xtensa-esp32-elf-bin
+        esp32.packages."${system}".gcc-xtensa-esp32s3-elf-bin
+        esp32.packages."${system}".openocd-esp32-bin
+        pkgs.esptool
+
         pleaseKeepMyInputs
       ];
+
+    shellHook = let
+      esp-idf = (esp32.packages."${system}".esp-idf.overrideAttrs (old: {
+        propagatedBuildInputs = []; # prevent the python from leaking
+      }));
+
+      esp-python-wrapper = pkgs.writeShellScriptBin "esp-python-wrapper" ''
+        PYTHONPATH=$IDF_PYTHON_ENV_PATH $IDF_PYTHON_ENV_PATH/bin/python "$@"
+      '';
+    in ''
+      export IDF_PATH=${esp-idf}
+      export IDF_PYTHON_ENV_PATH=$(readlink -f "$IDF_PATH"/lib/..)
+      # used (we hope) exclusively by the IDF cmake stuff
+      export PYTHON=${esp-python-wrapper}/bin/esp-python-wrapper
+    '';
     };
   };
 }
