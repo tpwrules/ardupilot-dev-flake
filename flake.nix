@@ -87,6 +87,8 @@
         })
         esp32.packages."${system}".openocd-esp32-bin
         pkgs.esptool
+        pkgs.cmake
+        pkgs.ninja
 
         pleaseKeepMyInputs
       ];
