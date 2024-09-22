@@ -8,9 +8,12 @@
 # `nix develop`.
 {
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  # ESP-IDF 5.3 series
+  inputs.esp32.url = "github:mirrexagon/nixpkgs-esp-dev/e740e017122636ac1dbce9c0e3d867b9947a1687";
+  inputs.esp32.inputs.nixpkgs.follows = "nixpkgs";
 
-  outputs = { self, nixpkgs }: let
-    inputs = { inherit nixpkgs; };
+  outputs = { self, nixpkgs, esp32 }: let
+    inputs = { inherit nixpkgs esp32; };
     system = "x86_64-linux";
 
     pkgs = nixpkgs.legacyPackages."${system}";
@@ -27,6 +30,8 @@
     # them from being garbage collected
     pleaseKeepMyInputs = pkgs.writeTextDir "bin/.please-keep-my-inputs"
       (builtins.concatStringsSep " " (builtins.attrValues inputs));
+
+    esp = esp32.packages."${system}";
   in {
     devShell."${system}" = pkgs.mkShellNoCC {
       buildInputs = [
@@ -73,8 +78,20 @@
           exec ${pkgs.lua-language-server}/share/lua-language-server/bin/lua-language-server --metapath=''${XDG_CACHE_HOME:-''$HOME/.cache}/lua-language-server/meta "''$@"
         '')
 
+        # esp32 stuff
+        esp.esp-idf-esp32
+        esp.esp-idf-esp32s3
+        pkgs.esptool
+        pkgs.cmake
+        pkgs.ninja
+
         pleaseKeepMyInputs
       ];
+
+      shellHook = ''
+        # used (we hope) exclusively by the IDF cmake stuff
+        export PYTHON="$IDF_PYTHON_ENV_PATH/bin/python"
+      '';
     };
   };
 }

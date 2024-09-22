@@ -1,5 +1,45 @@
 {
   "nodes": {
+    "esp32": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1724640360,
+        "narHash": "sha256-l77E6PA/NGCKw9hMOSZjqLTCb6FNEqh/SDkdds/KF9o=",
+        "owner": "mirrexagon",
+        "repo": "nixpkgs-esp-dev",
+        "rev": "e740e017122636ac1dbce9c0e3d867b9947a1687",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mirrexagon",
+        "repo": "nixpkgs-esp-dev",
+        "rev": "e740e017122636ac1dbce9c0e3d867b9947a1687",
+        "type": "github"
+      }
+    },
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1705309234,
+        "narHash": "sha256-uNRRNRKmJyCRC/8y1RqBkqWBLM034y4qN7EprSdmgyA=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "1ef2e671c3b0c19053962c07dbda38332dcebf26",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1717112898,
@@ -18,7 +58,23 @@
     },
     "root": {
       "inputs": {
+        "esp32": "esp32",
         "nixpkgs": "nixpkgs"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
       }
     }
   },
