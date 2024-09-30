@@ -79,8 +79,14 @@
         '')
 
         # esp32 stuff
-        esp.esp-idf-esp32
-        esp.esp-idf-esp32s3
+        (esp.esp-idf-esp32.override {
+          rev = "cc3203dc4f087ab41b434afff1ed7520c6d90993";
+          sha256 = "sha256-hcE4Tr5PTRQjfiRYgvLB1+8sR7KQQ1TnQJqViodGdBw=";
+        })
+        (esp.esp-idf-esp32s3.override {
+          rev = "cc3203dc4f087ab41b434afff1ed7520c6d90993";
+          sha256 = "sha256-hcE4Tr5PTRQjfiRYgvLB1+8sR7KQQ1TnQJqViodGdBw=";
+        })
         pkgs.esptool
         pkgs.cmake
         pkgs.ninja
