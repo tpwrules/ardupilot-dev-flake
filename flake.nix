@@ -43,6 +43,9 @@
         # used for SITL (console and map modules must be manually loaded)
         pkgs.mavproxy
 
+        # for debugging and flashing etc
+        pkgs.openocd
+
         (pkgs.python3.withPackages (p: [
           (p.callPackage ./nix/packages/empy {})
           p.pexpect
