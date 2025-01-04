@@ -33,6 +33,7 @@
         # needed because the binding generator just YOLOs a compiler and it must
         # be before the ARM compiler below to avoid being falsely detected
         pkgs.stdenv.cc
+        pkgs.gdb
         # ARM compiler used by CI and generally approved
         (pkgs.callPackage ./nix/packages/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux {})
         # needed for version info and such
