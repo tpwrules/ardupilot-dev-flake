@@ -12,8 +12,11 @@
   inputs.esp32.url = "github:mirrexagon/nixpkgs-esp-dev/e740e017122636ac1dbce9c0e3d867b9947a1687";
   inputs.esp32.inputs.nixpkgs.follows = "nixpkgs";
 
-  outputs = { self, nixpkgs, esp32 }: let
-    inputs = { inherit nixpkgs esp32; };
+  inputs.gradle2nix.url = "github:tadfisher/gradle2nix/v2";
+  inputs.gradle2nix.inputs.nixpkgs.follows = "nixpkgs";
+
+  outputs = { self, nixpkgs, esp32, gradle2nix }: let
+    inputs = { inherit nixpkgs esp32 gradle2nix; };
     system = "x86_64-linux";
 
     pkgs = nixpkgs.legacyPackages."${system}";
@@ -90,6 +93,10 @@
         pkgs.esptool
         pkgs.cmake
         pkgs.ninja
+
+        (pkgs.callPackage ./nix/packages/microxrceddsgen {
+          buildGradlePackage = gradle2nix.builders."${system}".buildGradlePackage;
+        })
 
         pleaseKeepMyInputs
       ];
