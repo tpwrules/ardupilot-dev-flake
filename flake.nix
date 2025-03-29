@@ -1,5 +1,5 @@
 # HOW TO USE:
-# 1. make a `profiles/` directory in your repo and add to .gitignore
+# 1. make a `profiles/` directory in your repo
 # 2. nix develop --profile profiles/dev
 # 3. done!
 #
