@@ -45,7 +45,14 @@
         pkgs.mavproxy
 
         # for debugging and flashing etc
-        pkgs.openocd
+        (pkgs.openocd.overrideAttrs (old: {
+          patches = (old.patches or []) ++ [
+            (pkgs.fetchpatch {
+              url = "https://github.com/tridge/openocd/commit/57df431d76fb568aa6e4c77dd3a435745a8c414c.patch";
+              hash = "sha256-RDa+HgCs0VMV+dyMhboQ651bw0iBT47uFACAis/Vp6o=";
+            })
+          ];
+        }))
 
         (pkgs.python3.withPackages (p: [
           (p.callPackage ./nix/packages/empy {})
