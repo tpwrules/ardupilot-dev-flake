@@ -8,7 +8,7 @@
 
 buildGradlePackage {
   pname = "microxrceddsgen";
-  version = "2.0.2-ardupilot";
+  version = "4.7.1-ardupilot";
   
   # generated using nix run github:tadfisher/gradle2nix/f8c0afcd2936bce1eda300b74250ec1810c41c2e -- -t assemble
   # (this git hash is head of v2 at the time of writing)
@@ -23,8 +23,8 @@ buildGradlePackage {
   src = fetchFromGitHub {
     owner = "ArduPilot";
     repo = "Micro-XRCE-DDS-Gen";
-    rev = "93b118a27758eea5cddf14baa17bfcaaaa69dcff";
-    hash = "sha256-jMKZEY5IYrGPfGqh2iRamcpOc5JYaH99ssj0nTmstVA=";
+    rev = "v4.7.1";
+    hash = "sha256-6mDIa6o6lrXHxYX+7HNPvUV8XFVuMeS1rYc3KSt+hLU=";
     fetchSubmodules = true;
   };
 
