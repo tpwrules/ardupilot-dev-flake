@@ -3,6 +3,7 @@
 , cmake
 , fetchFromGitHub
 , microxrceddsclient
+, fastcdr
 }:
 
 stdenv.mkDerivation {
@@ -19,5 +20,9 @@ stdenv.mkDerivation {
   nativeBuildInputs = [ cmake ];
 
 
-  buildInputs = [ microxrceddsclient ];
+  cmakeFlags = [
+    "-DUAGENT_USE_SYSTEM_FASTCDR=ON"
+  ]; 
+
+  buildInputs = [ microxrceddsclient fastcdr ];
 }
