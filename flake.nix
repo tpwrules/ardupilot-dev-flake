@@ -7,34 +7,36 @@
 # due to Nix's native caching. if you want logs during build, add `-L` to 
 # `nix develop`.
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  # inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
   # ESP-IDF 5.3 series
-  inputs.esp32.url = "github:mirrexagon/nixpkgs-esp-dev/e740e017122636ac1dbce9c0e3d867b9947a1687";
-  inputs.esp32.inputs.nixpkgs.follows = "nixpkgs";
+  # inputs.esp32.url = "github:mirrexagon/nixpkgs-esp-dev/e740e017122636ac1dbce9c0e3d867b9947a1687";
+  # inputs.esp32.inputs.nixpkgs.follows = "nixpkgs";
+
+  inputs.nix-ros-overlay.url = "github:lopsided98/nix-ros-overlay/master";
+  inputs.nixpkgs.follows = "nix-ros-overlay/nixpkgs";  # IMPORTANT!!!
 
   inputs.gradle2nix.url = "github:tadfisher/gradle2nix/v2";
   inputs.gradle2nix.inputs.nixpkgs.follows = "nixpkgs";
 
-  outputs = { self, nixpkgs, esp32, gradle2nix }: let
-    inputs = { inherit nixpkgs esp32 gradle2nix; };
+  outputs = { self, nixpkgs,  gradle2nix, nix-ros-overlay }: let
+    inputs = { inherit nixpkgs gradle2nix nix-ros-overlay; };
     system = "x86_64-linux";
 
-    pkgs = nixpkgs.legacyPackages."${system}";
+    # pkgs = nixpkgs.legacyPackages."${system}";
 
     # or, if you need to add an overlay:
-    # pkgs = import nixpkgs {
-    #   inherit system;
-    #   overlays = [
-    #     (import ./nix/overlay.nix)
-    #   ];
-    # };
+    pkgs = import nixpkgs {
+      inherit system;
+      overlays = [
+        nix-ros-overlay.overlays.default
+        # (import ./nix/overlay.nix)
+      ];
+    };
 
     # a text file containing the paths to the flake inputs in order to stop
     # them from being garbage collected
     pleaseKeepMyInputs = pkgs.writeTextDir "bin/.please-keep-my-inputs"
       (builtins.concatStringsSep " " (builtins.attrValues inputs));
-
-    esp = esp32.packages."${system}";
   in {
     devShell."${system}" = pkgs.mkShellNoCC {
       buildInputs = [
@@ -74,6 +76,15 @@
           })
         ]))
 
+        pkgs.colcon
+        # ... other non-ROS packages
+        (with pkgs.rosPackages.humble; buildEnv {
+          paths = [
+            ros-core
+            # ... other ROS packages
+          ];
+        })
+
         # must be 5.1 due to `setfenv` in libraries/AP_Scripting/tests/luacheck.lua
         pkgs.lua51Packages.luacheck
         # invoke in the correct way so that the --check argument works (upstream nixpkgs patch might be warranted?)
@@ -81,18 +92,18 @@
           exec ${pkgs.lua-language-server}/share/lua-language-server/bin/lua-language-server --metapath=''${XDG_CACHE_HOME:-''$HOME/.cache}/lua-language-server/meta "''$@"
         '')
 
-        # esp32 stuff
-        (esp.esp-idf-esp32.override {
-          rev = "cc3203dc4f087ab41b434afff1ed7520c6d90993";
-          sha256 = "sha256-hcE4Tr5PTRQjfiRYgvLB1+8sR7KQQ1TnQJqViodGdBw=";
-        })
-        (esp.esp-idf-esp32s3.override {
-          rev = "cc3203dc4f087ab41b434afff1ed7520c6d90993";
-          sha256 = "sha256-hcE4Tr5PTRQjfiRYgvLB1+8sR7KQQ1TnQJqViodGdBw=";
-        })
-        pkgs.esptool
-        pkgs.cmake
-        pkgs.ninja
+        # # esp32 stuff
+        # (esp.esp-idf-esp32.override {
+        #   rev = "cc3203dc4f087ab41b434afff1ed7520c6d90993";
+        #   sha256 = "sha256-hcE4Tr5PTRQjfiRYgvLB1+8sR7KQQ1TnQJqViodGdBw=";
+        # })
+        # (esp.esp-idf-esp32s3.override {
+        #   rev = "cc3203dc4f087ab41b434afff1ed7520c6d90993";
+        #   sha256 = "sha256-hcE4Tr5PTRQjfiRYgvLB1+8sR7KQQ1TnQJqViodGdBw=";
+        # })
+        # pkgs.esptool
+        # pkgs.cmake
+        # pkgs.ninja
 
         (pkgs.callPackage ./nix/packages/microxrceddsgen {
           buildGradlePackage = gradle2nix.builders."${system}".buildGradlePackage;
