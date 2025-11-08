@@ -10,13 +10,13 @@
 
 stdenv.mkDerivation {
   pname = "fastdds";
-  version = "3.1.0";
+  version = "2.12.2";
 
   src = fetchFromGitHub {
     owner = "eProsima";
     repo = "Fast-DDS";
-    rev = "v3.1.0";
-    hash = "sha256-YUAIuIQapa+SzYKE+/GFYMI4tjBrldmojHkYHim0mFw=";
+    rev = "v2.12.2";
+    hash = "sha256-8H0ENFqA+gZTr1F8J1YrS6gC3xF66mAA/E4AF0E3j08=";
   };
 
   nativeBuildInputs = [ cmake ];

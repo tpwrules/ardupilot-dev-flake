@@ -12,13 +12,13 @@
 
 stdenv.mkDerivation {
   pname = "micro-xrce-dds-agent";
-  version = "3.0.1";
+  version = "2.4.2";
 
   src = fetchFromGitHub {
     owner = "eProsima";
     repo = "Micro-XRCE-DDS-Agent";
-    rev = "155cfaaf8b7abac2e85d4a62d3649b09ace0be55";
-    hash = "sha256-nBJ+WuoZhB3+/NiYAH/l1r0BK1aFzAUfGpyOKpWC1sg=";
+    rev = "57d086216d01ec43121845d385894a25987f8a2c";
+    hash = "sha256-w8lq54VO5PgqIwvaxal37zKoI7YhcAwAmT66ZutHtGE=";
   };
 
   nativeBuildInputs = [ cmake ];
@@ -32,6 +32,6 @@ stdenv.mkDerivation {
 
   patchPhase = ''
     substituteInPlace cmake/SuperBuild.cmake \
-      --replace-fail 'fastdds ''${_fastdds_version} EXACT' 'fastdds ''${_fastdds_version}'
+      --replace-fail 'fastrtps ''${_fastdds_version} EXACT' 'fastrtps ''${_fastdds_version}'
   '';
 }
