@@ -4,6 +4,7 @@
 , fetchFromGitHub
 , microxrceddsclient
 , fastcdr
+, foonathan_memory
 }:
 
 stdenv.mkDerivation {
@@ -24,5 +25,5 @@ stdenv.mkDerivation {
     "-DUAGENT_USE_SYSTEM_FASTCDR=ON"
   ]; 
 
-  buildInputs = [ microxrceddsclient fastcdr ];
+  buildInputs = [ microxrceddsclient fastcdr foonathan_memory ];
 }
