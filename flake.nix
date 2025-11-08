@@ -82,7 +82,11 @@
           paths = [
             ros-core
             (pkgs.rosPackages.humble.callPackage ./nix/packages/micro_ros_agent {
-              microxrceddsagent = (pkgs.callPackage ./nix/packages/microxrceddsagent {});
+              microxrceddsagent = (pkgs.callPackage ./nix/packages/microxrceddsagent {
+                microxrceddsclient = (pkgs.callPackage ./nix/packages/microxrceddsclient {
+                  microcdr = (pkgs.callPackage ./nix/packages/microcdr {});
+                });
+              });
             })
             # ... other ROS packages
           ];

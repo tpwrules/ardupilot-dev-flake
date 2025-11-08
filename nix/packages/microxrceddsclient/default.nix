@@ -2,6 +2,7 @@
 , lib
 , cmake
 , fetchFromGitHub
+, microcdr
 }:
 
 stdenv.mkDerivation {
@@ -16,5 +17,7 @@ stdenv.mkDerivation {
   };
 
   nativeBuildInputs = [ cmake ];
+
+  buildInputs = [ microcdr ];
 
 }
