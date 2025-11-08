@@ -17,4 +17,8 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ cmake ];
 
+  postInstall = ''
+    cp -r $out/{include,lib} $out/microcdr-*
+  '';
+
 }
