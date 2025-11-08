@@ -86,6 +86,10 @@
                 microxrceddsclient = (pkgs.callPackage ./nix/packages/microxrceddsclient {
                   microcdr = (pkgs.callPackage ./nix/packages/microcdr {});
                 });
+                foonathan_memory = (pkgs.callPackage ./nix/packages/foonathan_memory {});
+                fastdds = (pkgs.callPackage ./nix/packages/fastdds {
+                  foonathan_memory = (pkgs.callPackage ./nix/packages/foonathan_memory {});
+                });
               });
             })
             # ... other ROS packages
