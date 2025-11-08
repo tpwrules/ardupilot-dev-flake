@@ -13,7 +13,7 @@ buildRosPackage rec {
 
   buildType = "ament_cmake";
   sourceRoot = "${src.name}/micro_ros_agent/";
-  buildInputs = [ ament-cmake microxrceddsagent ];
+  buildInputs = [ ament-cmake microxrceddsagent ament-lint-auto ];
   checkInputs = [ ament-cmake-gtest ament-lint-auto ament-lint-common builtin-interfaces rosidl-default-generators rosidl-typesupport-fastrtps-cpp ];
   propagatedBuildInputs = [ micro-ros-msgs rcutils rmw rmw-dds-common rmw-fastrtps-shared-cpp ];
   nativeBuildInputs = [ ament-cmake ];
