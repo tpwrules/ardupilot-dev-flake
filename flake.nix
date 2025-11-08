@@ -81,6 +81,7 @@
         (with pkgs.rosPackages.humble; buildEnv {
           paths = [
             ros-core
+            (pkgs.rosPackages.humble.callPackage ./nix/packages/micro_ros_agent {})
             # ... other ROS packages
           ];
         })
