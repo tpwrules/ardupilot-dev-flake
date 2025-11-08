@@ -25,11 +25,25 @@
     # pkgs = nixpkgs.legacyPackages."${system}";
 
     # or, if you need to add an overlay:
-    pkgs = import nixpkgs {
+    pkgs = let
+      # https://github.com/lopsided98/nix-ros-overlay/issues/262#issuecomment-1614877826
+      appendDistroOverlay = rosOverlay: rosPackages:
+        rosPackages // builtins.mapAttrs
+          (rosDistro: rosPkgs:
+            if rosPkgs ? overrideScope
+            then rosPkgs.overrideScope rosOverlay
+            else rosPkgs)
+          rosPackages;
+    in import nixpkgs {
       inherit system;
       overlays = [
         nix-ros-overlay.overlays.default
         # (import ./nix/overlay.nix)
+        (self: super: {
+          rosPackages = appendDistroOverlay (rosSelf: rosSuper: {
+            libxml2 = super.libxml2.override { enableHttp = true; };
+          }) super.rosPackages;
+        })
       ];
     };
 
