@@ -6,6 +6,8 @@
 , fastcdr
 , foonathan_memory
 , fastdds
+, tinyxml-2
+, spdlog
 }:
 
 stdenv.mkDerivation {
@@ -26,5 +28,10 @@ stdenv.mkDerivation {
     "-DUAGENT_USE_SYSTEM_FASTCDR=ON"
   ]; 
 
-  buildInputs = [ microxrceddsclient fastcdr foonathan_memory fastdds ];
+  buildInputs = [ microxrceddsclient fastcdr foonathan_memory fastdds tinyxml-2 spdlog ];
+
+  patchPhase = ''
+    substituteInPlace cmake/SuperBuild.cmake \
+      --replace-fail 'fastdds ''${_fastdds_version} EXACT' 'fastdds ''${_fastdds_version}'
+  '';
 }
