@@ -60,6 +60,8 @@
           p.future
           p.intelhex
           p.scipy
+          p.geopy
+          p.pytest
           # fake library so that Tools/scripts/run_lua_language_check.py doesn't download binaries
           (p.buildPythonPackage {
             pname = "github_release_downloader";
@@ -81,6 +83,42 @@
         (with pkgs.rosPackages.humble; buildEnv {
           paths = [
             ros-core
+            ament-cmake-core
+            python-cmake-module
+
+            ament-black
+            ament-cmake
+            ament-cmake-black
+            ament-cmake-copyright
+            ament-cmake-lint-cmake
+            ament-cmake-pep257
+            ament-cmake-pytest
+            ament-cmake-python
+            ament-cmake-uncrustify
+            ament-cmake-xmllint
+            ament-copyright
+            ament-index-python
+            ament-lint-auto
+            ament-pep257
+            ament-uncrustify
+            ament-xmllint
+            builtin-interfaces
+            geographic-msgs
+            geometry-msgs
+            launch
+            launch-pytest
+            launch-ros
+            # micro-ros-agent
+            micro-ros-msgs
+            rclpy
+            rosgraph-msgs
+            rosidl-default-generators
+            rosidl-default-runtime
+            sensor-msgs
+            pkgs.socat
+            std-msgs
+            tf2-msgs
+
             (pkgs.rosPackages.humble.callPackage ./nix/packages/micro_ros_agent {
               microxrceddsagent = (pkgs.callPackage ./nix/packages/microxrceddsagent {
                 microxrceddsclient = (pkgs.callPackage ./nix/packages/microxrceddsclient {
@@ -90,6 +128,8 @@
                 fastdds = (pkgs.callPackage ./nix/packages/fastdds {
                   foonathan_memory = (pkgs.callPackage ./nix/packages/foonathan_memory {});
                 });
+                spdlog = (pkgs.callPackage ./nix/packages/spdlog {});
+                fastcdr = (pkgs.callPackage ./nix/packages/fastcdr {});
               });
             })
             # ... other ROS packages
@@ -122,11 +162,6 @@
 
         pleaseKeepMyInputs
       ];
-
-      shellHook = ''
-        # used (we hope) exclusively by the IDF cmake stuff
-        export PYTHON="$IDF_PYTHON_ENV_PATH/bin/python"
-      '';
     };
   };
 }
