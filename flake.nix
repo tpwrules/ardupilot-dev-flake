@@ -119,17 +119,17 @@
             std-msgs
             tf2-msgs
 
-            (pkgs.rosPackages.humble.callPackage ./nix/packages/micro_ros_agent {
-              microxrceddsagent = (pkgs.callPackage ./nix/packages/microxrceddsagent {
-                microxrceddsclient = (pkgs.callPackage ./nix/packages/microxrceddsclient {
-                  microcdr = (pkgs.callPackage ./nix/packages/microcdr {});
+            (callPackage ./nix/packages/micro_ros_agent {
+              microxrceddsagent = (callPackage ./nix/packages/microxrceddsagent {
+                microxrceddsclient = (callPackage ./nix/packages/microxrceddsclient {
+                  microcdr = (callPackage ./nix/packages/microcdr {});
                 });
-                foonathan_memory = (pkgs.callPackage ./nix/packages/foonathan_memory {});
-                fastdds = (pkgs.callPackage ./nix/packages/fastdds {
-                  foonathan_memory = (pkgs.callPackage ./nix/packages/foonathan_memory {});
+                foonathan_memory = (callPackage ./nix/packages/foonathan_memory {});
+                fastdds = (callPackage ./nix/packages/fastdds {
+                  foonathan_memory = (callPackage ./nix/packages/foonathan_memory {});
                 });
-                spdlog = (pkgs.callPackage ./nix/packages/spdlog {});
-                fastcdr = (pkgs.callPackage ./nix/packages/fastcdr {});
+                spdlog = (callPackage ./nix/packages/spdlog {});
+                fastcdr = (callPackage ./nix/packages/fastcdr {});
               });
             })
             # ... other ROS packages

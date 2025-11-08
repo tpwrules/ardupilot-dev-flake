@@ -26,4 +26,11 @@ stdenv.mkDerivation {
   env.NIX_CFLAGS_COMPILE = lib.concatStringsSep " " [
     "-Wno-error=template-id-cdtor"
   ];
+
+  postPatch = ''
+    echo "#include <cstdint>" > xtempfile
+    cat xtempfile src/cpp/statistics/types/typesv1.cxx > ytempfile
+    mv ytempfile src/cpp/statistics/types/typesv1.cxx
+    rm xtempfile
+  '';
 }
