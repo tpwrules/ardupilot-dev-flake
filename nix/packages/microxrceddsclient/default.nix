@@ -7,17 +7,17 @@
 
 stdenv.mkDerivation {
   pname = "micro-xrce-dds-client";
-  version = "3.0.1";
+  version = "3.0.0";
 
   src = fetchFromGitHub {
     owner = "eProsima";
     repo = "Micro-XRCE-DDS-Client";
-    rev = "bdfa28090efc8c0e89aa5c95cdf0878c8289a18b";
-    hash = "sha256-WTtPbLL2ERNN6n/aT2mhNgG7VjGYXyPeO6ddhYfJTVE=";
+    rev = "9e05a62f3352ce5bf1cec0d2b518391179213ce6";
+    hash = "sha256-bh9Om36idZ1ybUNn6vHsm6TUDjIccZHTNKgeT8wr+DU=";
   };
 
   nativeBuildInputs = [ cmake ];
 
-  buildInputs = [ microcdr ];
+  propagatedBuildInputs = [ microcdr ];
 
 }
