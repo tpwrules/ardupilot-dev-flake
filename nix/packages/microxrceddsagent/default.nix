@@ -28,7 +28,7 @@ stdenv.mkDerivation {
     "-DUAGENT_USE_SYSTEM_FASTCDR=ON"
   ]; 
 
-  buildInputs = [ microxrceddsclient fastcdr foonathan_memory fastdds tinyxml-2 spdlog ];
+  propagatedBuildInputs = [ microxrceddsclient fastcdr foonathan_memory fastdds tinyxml-2 spdlog ];
 
   patchPhase = ''
     substituteInPlace cmake/SuperBuild.cmake \

@@ -18,6 +18,13 @@ buildRosPackage rec {
   propagatedBuildInputs = [ micro-ros-msgs rcutils rmw rmw-dds-common rmw-fastrtps-shared-cpp ];
   nativeBuildInputs = [ ament-cmake ];
 
+  postPatch = ''
+    substituteInPlace cmake/SuperBuild.cmake \
+      --replace-fail 'xrceagent' 'microxrcedds_agent' \
+      --replace-fail '2 EXACT' '2' \
+      --replace-fail 'QUIET' ""
+  '';
+
   meta = {
     description = "micro-ROS Agent package";
     license = with lib.licenses; [ asl20 ];
