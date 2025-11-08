@@ -2,6 +2,7 @@
 , lib
 , cmake
 , fetchFromGitHub
+, microxrceddsclient
 }:
 
 stdenv.mkDerivation {
@@ -17,4 +18,6 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ cmake ];
 
+
+  buildInputs = [ microxrceddsclient ];
 }
