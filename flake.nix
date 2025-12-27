@@ -61,6 +61,7 @@
           p.future
           p.intelhex
           p.scipy
+          p.gitpython
           # fake library so that Tools/scripts/run_lua_language_check.py doesn't download binaries
           (p.buildPythonPackage {
             pname = "github_release_downloader";
