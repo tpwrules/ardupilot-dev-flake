@@ -11,7 +11,7 @@
 
   outputs = { self, nixpkgs }: let
     inputs = { inherit nixpkgs; };
-    system = "x86_64-linux";
+    system = "aarch64-darwin";
 
     pkgs = nixpkgs.legacyPackages."${system}";
 
@@ -33,9 +33,10 @@
         # needed because the binding generator just YOLOs a compiler and it must
         # be before the ARM compiler below to avoid being falsely detected
         pkgs.stdenv.cc
-        pkgs.gdb
+        pkgs.lldb
+        (pkgs.callPackage ./nix/packages/debugserver {})
         # ARM compiler used by CI and generally approved
-        (pkgs.callPackage ./nix/packages/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux {})
+        #(pkgs.callPackage ./nix/packages/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux {})
         # needed for version info and such
         pkgs.git
         # checked for, not sure if needed
@@ -43,16 +44,6 @@
 
         # used for SITL (console and map modules must be manually loaded)
         pkgs.mavproxy
-
-        # for debugging and flashing etc
-        (pkgs.openocd.overrideAttrs (old: {
-          patches = (old.patches or []) ++ [
-            (pkgs.fetchpatch {
-              url = "https://github.com/tridge/openocd/commit/57df431d76fb568aa6e4c77dd3a435745a8c414c.patch";
-              hash = "sha256-RDa+HgCs0VMV+dyMhboQ651bw0iBT47uFACAis/Vp6o=";
-            })
-          ];
-        }))
 
         (pkgs.python3.withPackages (p: [
           (p.callPackage ./nix/packages/empy {})
