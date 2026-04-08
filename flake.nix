@@ -56,6 +56,7 @@
 
         (pkgs.python3.withPackages (p: [
           (p.callPackage ./nix/packages/empy {})
+          (p.callPackage ./nix/packages/pymonocypher {})
           p.pexpect
           p.setuptools
           p.future
