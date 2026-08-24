@@ -88,6 +88,15 @@
 
         pleaseKeepMyInputs
       ];
+
+      # source shell completion scripts if available
+      shellHook = ''
+        if [ -n "''${BASH_VERSION:-}" ] && [ -f Tools/completion/completion.bash ]; then
+          source Tools/completion/completion.bash
+        elif [ -n "''${ZSH_VERSION:-}" ] && [ -f Tools/completion/completion.zsh ]; then
+          source Tools/completion/completion.zsh
+        fi
+      '';
     };
   };
 }
